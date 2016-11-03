@@ -23,6 +23,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         });
     })
 
+  .controller('ManageUsersController', function($scope, UserService) {
+    $scope.test = 'VARIABLE';
+
+    $scope.users = UserService.getAllUsers();
+
+    $scope.$watch(() => {
+      return UserService.getAllUsers().length;
+    }, (newValue, oldValue) => {
+      $scope.users = UserService.getAllUsers();
+    });
+
+    // $scope.users = UserService.getAllUsers();
+  })
+
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
         $ionicConfigProvider.tabs.position('bottom');
@@ -56,7 +70,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     }
                 }
             })
-
             .state('tab.my-settings', {
                 url: '/my-settings',
                 views: {
@@ -78,10 +91,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 url: '/admin-users',
                 views: {
                     'tab-admin-settings': {
-                        templateUrl: 'templates/admin-users.html'
+                templateUrl: 'templates/admin-users.html',
+                controller: 'ManageUsersController'
                     }
                 }
             })
+          .state('tab.admin-user', {
+            url: '/admin-user/:userId',
+            params: {
+              userId: null
+            },
+            views: {
+              'tab-admin-settings': {
+                templateUrl: 'templates/admin-user.html',
+              }
+            }
+          })
             .state('tab.admin-events', {
                 url: '/admin-events',
                 views: {
@@ -101,7 +126,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                         templateUrl: 'templates/edit-event.html'
                     }
                 }
-            })
+          });
 
 
         // if none of the above states are matched, use this as the fallback
