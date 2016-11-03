@@ -1,87 +1,215 @@
-
-
 angular.module('starter.services', [])
 
-.factory('firebaseInit', ['$firebaseObject', function($firebaseObject) {
+  .factory('fireBaseInit', function() {
 
+    var firebaseObj;
 
-  var fireBase;
+    function createInstance(){
+      // Initialize Firebase
+      firebase.initializeApp({
+        apiKey: "AIzaSyCbFIwQ3Z9ovnrZgsqe5unQnikVV92DAhQ",
+        authDomain: "hackathonproj-12729.firebaseapp.com",
+        databaseURL: "https://hackathonproj-12729.firebaseio.com",
+        storageBucket: "hackathonproj-12729.appspot.com",
+        messagingSenderId: "218970006552"
+      });
 
-  function createInstance (){
-     fireBase = $firebaseObject;
+      firebaseObj = firebase;
 
-    // Initialize Firebase
-    firebase.initializeApp({
-      apiKey: "AIzaSyCbFIwQ3Z9ovnrZgsqe5unQnikVV92DAhQ",
-      authDomain: "hackathonproj-12729.firebaseapp.com",
-      databaseURL: "https://hackathonproj-12729.firebaseio.com",
-      storageBucket: "hackathonproj-12729.appspot.com",
-      messagingSenderId: "218970006552"
+      return firebaseObj;
+    }
+
+    function getInstance() {
+      if (!firebaseObj) {
+        createInstance();
+      }
+      return firebaseObj;
+    }
+
+    return {
+      dataBase: getInstance().database()
+    };
+  })
+
+  .factory('UserService', ['fireBaseInit', function(fireBaseInit) {
+
+    let db = fireBaseInit.dataBase,
+        users = [],
+        ref = db.ref("users");
+
+    function getKey() {
+      return new Date().getTime();
+    }
+
+    function addUser(userData) {
+      let key = getKey();
+/*
+      {
+        "id": 0,
+        "name": {
+        "first": "",
+          "last": ""
+      },
+        "email": "",
+        "phone": 0,
+        "spots_left": 0,
+        "spots_total": 0,
+        "money_left": 0,
+        "money_total": 0,
+        "google_login_token": "",
+        "events": [0]
+      }
+*/
+      db.ref('users/' + key).set(userData);
+    }
+
+    function updateUserById(userId, data) {
+      db.ref('users/' + key).update(data);
+    }
+
+    function deleteUserById(userId) {
+      db.ref('users/' + userId).remove();
+    }
+
+    ref.on("value", function(snapshot) {
+        users = snapshot.val();
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
     });
 
-    return this.fireBase;
-  }
-
-  function getInstance() {
-    if (!fireBase) {
-      createInstance();
+    function getUserById(userId){
+      return _.find(users, (user)=>{
+         return user.id === userId;
+      })
     }
-    return fireBase;
-  }
+
+    function registerUserToEvent(eventId, userId){
+      var user = getUserById(userId),
+          userEvents =  _.clone(user.events);
+
+      userEvents.push(eventId);
+
+      updateUserById(userId, {
+        events: userEvents
+      });
+    }
+
+    function getAllUsers() {
+      return users;
+    }
+    
+    return {
+      addUser: addUser,
+      updateUserById: updateUserById,
+      getUserById: getUserById,
+      deleteUserById: deleteUserById,
+      registerUserToEvent: registerUserToEvent,
+      getAllUsers: getAllUsers
+    };
+  }])
+
+  .factory('EventService', ['fireBaseInit', function(fireBaseInit) {
+
+    let db = fireBaseInit.dataBase,
+        ref = db.ref("events"),
+        events = [];
+
+    function getKey() {
+      return new Date().getTime();
+    }
+
+    function addEvent(eventData) {
+/*      {
+        "title": "",
+        "timestamp": 0, //timestamp of beginning of first event
+        "min_persons": 0,
+        "max_persons": 0,
+        "location": "",
+        "hours_before_cant_regret": 0,
+        "hours_before_close_registration": 0,
+        "persons": [124, 14]
+      }*/
+
+      let key = getKey();
+        db.ref('events/' + key).set(eventData);
+    }
+
+    function updateEventById(eventId, data) {
+      db.ref('events/' + key).update(data);
+    }
+
+    function getEventById(eventId){
+      return _.find(events, (event)=>{
+        return event.id === eventId;
+      })
+    }
+
+    function deleteEventById(eventId) {
+      db.ref('events/' + eventId).remove();
+    }
 
 
-  return {
-    getInstance: getInstance,
-  }
+    ref.on("value", function(snapshot) {
+      events = snapshot.val()
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    });
 
-}])
 
+    return {
+      addEvent: addEvent,
+      updateEventById: updateEventById,
+      getEventById: getEventById,
+      deleteEventById: deleteEventById,
+      events: events
+    };
+  }])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
+  .factory('Chats', function() {
+    // Might use a resource here that returns a JSON array
 
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
+    // Some fake testing data
+    var chats = [{
+      id: 0,
+      name: 'Ben Sparrow',
+      lastText: 'You on your way?',
+      face: 'img/ben.png'
+    }, {
+      id: 1,
+      name: 'Max Lynx',
+      lastText: 'Hey, it\'s me',
+      face: 'img/max.png'
+    }, {
+      id: 2,
+      name: 'Adam Bradleyson',
+      lastText: 'I should buy a boat',
+      face: 'img/adam.jpg'
+    }, {
+      id: 3,
+      name: 'Perry Governor',
+      lastText: 'Look at my mukluks!',
+      face: 'img/perry.png'
+    }, {
+      id: 4,
+      name: 'Mike Harrington',
+      lastText: 'This is wicked good ice cream.',
+      face: 'img/mike.png'
+    }];
 
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
+    return {
+      all: function() {
+        return chats;
+      },
+      remove: function(chat) {
+        chats.splice(chats.indexOf(chat), 1);
+      },
+      get: function(chatId) {
+        for (var i = 0; i < chats.length; i++) {
+          if (chats[i].id === parseInt(chatId)) {
+            return chats[i];
+          }
         }
+        return null;
       }
-      return null;
-    }
-  };
-});
+    };
+  });
