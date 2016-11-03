@@ -43,12 +43,6 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
     abstract: true,
     templateUrl: 'templates/tabs.html'
   })
-    .state('tab.my-events', {
-      url: '/my-events',
-      controller: 'MyEventsController',
-      templateUrl: 'templates/my-events.html'
-    })
-
   // Each tab has its own nav history stack:
 
   .state('tab.my-events', {
