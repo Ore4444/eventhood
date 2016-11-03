@@ -24,18 +24,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     })
 
     .controller('ManageUsersController', function ($scope, UserService) {
-        $scope.test = 'VARIABLE';
-
+    UserService.init()
+      .then(() => {
         $scope.users = UserService.getAllUsers();
+        console.log($scope.users);
+      });
 
         $scope.$watch(() => {
             return UserService.getAllUsers().length;
-        }, (newValue, oldValue) => {
+    }, () => {
             $scope.users = UserService.getAllUsers();
         });
 
-        // $scope.users = UserService.getAllUsers();
+    $scope.$on('$stateChangeSuccess', () => {
+      $scope.users = UserService.getAllUsers();
     })
+  })
 
     .controller('AdminEventsController', function ($scope, EventService) {
         EventService.init().then(()=> {
@@ -135,14 +139,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     }
                 }
             })
-            .state('tab.admin-user', {
-                url: '/admin-user/:userId',
+          .state('tab.edit-user', {
+            url: '/edit-user/:userId',
                 params: {
                     userId: null
                 },
                 views: {
                     'tab-admin-settings': {
-                        templateUrl: 'templates/admin-user.html',
+                templateUrl: 'templates/edit-user.html',
+                controller: 'EditUserController',
                     }
                 }
             })

@@ -1,8 +1,9 @@
 <ion-view view-title="Users">
   <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="(index, user) in users" href="#/tab/admin-user/{{index}}">{{user.email}}</ion-item>
-      <ion-item href="#/tab/admin-user/1">user.email</ion-item>
-    </ion-list>
+    <div class="admin-settings">
+      <ion-list>
+        <ion-item ng-repeat="(id, user) in users" href="#/tab/edit-user/{{id}}">{{user.name}}</ion-item>
+      </ion-list>
+    </div>
   </ion-content>
 </ion-view>
