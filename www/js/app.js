@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'starter.services', 'firebase'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -23,81 +23,76 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicCloudProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
+  $ionicConfigProvider.tabs.position('bottom');
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-  // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: '/tab',
-    abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
-
-  // setup an abstract state for the tabs directive
   .state('login', {
     url: '/login',
     templateUrl: 'templates/login.html'
   })
 
-    .state('my-events', {
-      url: '/my-events',
-      controller: 'myEventsController',
-      templateUrl: 'templates/my-events.html'
-    })
+
+  // setup an abstract state for the tabs directive
+  .state('tab', {
+    url: '/tab',
+    abstract: true,
+    templateUrl: 'templates/tabs.html'
+  })
 
   // Each tab has its own nav history stack:
 
-  .state('tab.my.events', {
+  .state('tab.my-events', {
     url: '/my-events',
     views: {
-      'my-events': {
-        templateUrl: 'templates/my-events.html',
-        controller: 'MyEventsCtrl'
+      'tab-my-events': {
+        templateUrl: 'templates/tab-events.html',
+        controller: 'MyEventsController'
       }
     }
   })
 
-  .state('tab.chats', {
-      url: '/chats',
+    .state('tab.my-settings', {
+      url: '/my-settings',
       views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
+        'tab-my-settings': {
+          templateUrl: 'templates/tab-my-settings.html',
+          // controller: 'MySettingsController'
         }
       }
     })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
+    .state('tab.admin-settings', {
+      url: '/admin-settings',
       views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
+        'tab-admin-settings': {
+          templateUrl: 'templates/admin-settings.html'
         }
       }
     })
+    .state('tab.admin-users', {
+      url: '/admin-users',
+      views: {
+        'tab-admin-settings': {
+          templateUrl: 'templates/admin-users.html'
+        }
+      }
+    })
+    .state('tab.admin-events', {
+      url: '/admin-events',
+      views: {
+        'tab-admin-settings': {
+          templateUrl: 'templates/admin-events.html'
+        }
+      }
+    });
 
-  .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
-      }
-    }
-  });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/my-events');
-
-  $ionicCloudProvider.init({
-    "core": {
-      "app_id": "c6e768bb"
-    }
-  });
+  $urlRouterProvider.otherwise('/tab/my-settings');
 
 });

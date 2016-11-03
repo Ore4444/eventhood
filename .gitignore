@@ -2,6 +2,7 @@
 # http://git-scm.com/docs/gitignore
 
 .idea/
+.idea/workspace.xml
 node_modules/
 platforms/
 plugins/
