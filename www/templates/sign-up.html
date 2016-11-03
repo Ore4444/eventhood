@@ -1,0 +1,23 @@
+<ion-view view-title="Welcome">
+  <ion-content>
+    <div class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Email</span>
+        <input type="email" placeholder="tamark@ironsrc.com" ng-model="user.email">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Password</span>
+        <input type="password" placeholder="*********" ng-model="user.password" />
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Name</span>
+        <input type="text" placeholder="Tamar Karlinsky" ng-model="user.name" />
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Phone</span>
+        <input type="tel" placeholder="0541192284" ng-model="user.phone">
+      </label>
+    </div>
+    <a href="#/tab/my-events" ng-click="saveUser()" class="button button-block button-positive">Done</a>
+  </ion-content>
+</ion-view>

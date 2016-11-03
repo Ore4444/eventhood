@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
 
-    .run(function ($ionicPlatform) {
+    .run(function ($rootScope, loggedInUser, $ionicPlatform) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -21,25 +21,85 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 StatusBar.styleDefault();
             }
         });
+
+        $rootScope.logout = loggedInUser.logout;
+    })
+
+    .controller('LoginController', function($scope, UserService, loggedInUser, $state) {
+      $scope.user = {};
+
+      function maybeRedirect() {
+        if (localStorage.getItem('loggedInUserId')) {
+          $state.go('tab.my-events');
+        }
+      }
+
+      $scope.saveUser = function(user) {
+        if (user.email && user.password) {
+          UserService.init()
+            .then(() => {
+              const userId = UserService.addUser(user);
+              loggedInUser.login(userId);
+              maybeRedirect();
+            });
+        }
+      };
+
+      $scope.$on('$stateChangeSuccess', maybeRedirect);
+    })
+    .controller('SignUpController', function($scope, UserService, loggedInUser) {
+      let userId = null;
+      $scope.user = {};
+
+      UserService.init()
+        .then(() => {
+          $scope.users = UserService.getAllUsers();
+        });
+
+      $scope.saveUser = function() {
+        debugger;
+        userId = UserService.addUser($scope.user);
+        loggedInUser.login(userId);
+      };
     })
 
     .controller('ManageUsersController', function ($scope, UserService) {
-    UserService.init()
-      .then(() => {
-        $scope.users = UserService.getAllUsers();
-        console.log($scope.users);
-      });
-
-        $scope.$watch(() => {
-            return UserService.getAllUsers().length;
-    }, () => {
-            $scope.users = UserService.getAllUsers();
+      UserService.init()
+        .then(() => {
+          $scope.users = UserService.getAllUsers();
         });
 
-    $scope.$on('$stateChangeSuccess', () => {
-      $scope.users = UserService.getAllUsers();
+      $scope.$watch(() => {
+          return UserService.getAllUsers().length;
+      }, () => {
+          $scope.users = UserService.getAllUsers();
+      });
+
+      $scope.$on('$stateChangeSuccess', () => {
+        $scope.users = UserService.getAllUsers();
+      });
     })
-  })
+
+    .controller('EditUserController', function($ionicHistory, $timeout, $stateParams, $scope, UserService) {
+      const userId = $stateParams['userId'];
+
+      UserService.init()
+        .then(() => {
+          if (userId) {
+            $scope.user = UserService.getUserById(userId);
+          }
+        });
+
+      $scope.saveUser = (user) => {
+        if (userId) {
+          UserService.updateUserById(userId, user);
+        } else {
+          UserService.addUser(user);
+        }
+        $ionicHistory.goBack();
+      };
+
+    })
 
     .controller('AdminEventsController', function ($scope, EventService) {
         EventService.init().then(()=> {
@@ -90,8 +150,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $stateProvider
 
             .state('login', {
-                url: '/login',
-                templateUrl: 'templates/login.html'
+              url: '/login',
+              templateUrl: 'templates/login.html',
+              controller: 'LoginController'
+            })
+            .state('sign-up', {
+              url: '/sign-up',
+              templateUrl: 'templates/sign-up.html',
+              controller: 'SignUpController'
             })
 
 
@@ -146,8 +212,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 },
                 views: {
                     'tab-admin-settings': {
-                templateUrl: 'templates/edit-user.html',
-                controller: 'EditUserController',
+                      templateUrl: 'templates/edit-user.html',
+                      controller: 'EditUserController',
                     }
                 }
             })
@@ -175,6 +241,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/tab/my-settings');
+        $urlRouterProvider.otherwise('/login');
 
     });

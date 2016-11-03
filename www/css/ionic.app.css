@@ -9861,6 +9861,9 @@ ion-view[state="login"] .button.button-positive {
   margin-left: auto;
   margin-right: auto; }
 
+ion-view[state="login"] .error {
+  padding: 0 10px; }
+
 .admin-settings {
   display: flex;
   flex-direction: column; }

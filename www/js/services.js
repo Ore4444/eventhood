@@ -31,7 +31,20 @@ angular.module('starter.services', [])
     };
   })
 
-  .factory('UserService', ['fireBaseInit', function(fireBaseInit, $q) {
+  .factory('loggedInUser', ($state) => {
+    function login(userId) {
+      localStorage.setItem('loggedInUserId', userId);
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedInUserId');
+      $state.go('login');
+    }
+
+    return {login, logout};
+  })
+
+  .factory('UserService', ['fireBaseInit', '$q', function(fireBaseInit, $q) {
 
     let db = fireBaseInit.dataBase,
         users = [],
@@ -47,7 +60,8 @@ angular.module('starter.services', [])
       let key = getKey();
           userData.id = key;
 
-        db.ref('users/' + key).set(userData);
+      db.ref('users/' + key).set(userData);
+      return key;
     }
 
     function updateUserById(userId, data) {
