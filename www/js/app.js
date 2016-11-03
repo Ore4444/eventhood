@@ -86,7 +86,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 url: '/admin-events',
                 views: {
                     'tab-admin-settings': {
-                        templateUrl: 'templates/admin-events.html'
+                        templateUrl: 'templates/admin-events.html',
+                        controller: 'AdminEventsController'
                     }
                 }
             })

@@ -119,19 +119,9 @@ angular.module('starter.services', [])
     }
 
     function addEvent(eventData) {
-/*      {
-        "title": "",
-        "timestamp": 0, //timestamp of beginning of first event
-        "min_persons": 0,
-        "max_persons": 0,
-        "location": "",
-        "hours_before_cant_regret": 0,
-        "hours_before_close_registration": 0,
-        "persons": [124, 14]
-      }*/
-
       let key = getKey();
-        db.ref('events/' + key).set(eventData);
+      eventData.id = key;
+      db.ref('events/' + key).set(eventData);
     }
 
     function updateEventById(eventId, data) {
@@ -145,23 +135,28 @@ angular.module('starter.services', [])
     }
 
     function deleteEventById(eventId) {
+      console.log(eventId);
       db.ref('events/' + eventId).remove();
     }
-
-
+    
     ref.on("value", function(snapshot) {
-      events = snapshot.val()
+      if (snapshot.val()) {
+        events = snapshot.val();
+      }
     }, function (errorObject) {
       console.log("The read failed: " + errorObject.code);
     });
 
+    function getAllEvents() {
+      return events;
+    }
 
     return {
       addEvent: addEvent,
       updateEventById: updateEventById,
       getEventById: getEventById,
       deleteEventById: deleteEventById,
-      events: events
+      getAllEvents: getAllEvents
     };
   }])
 
