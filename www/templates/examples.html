@@ -1,4 +1,4 @@
-<ion-view view-title="My Events">
+<ion-view view-title="examples">
   <ion-content class="padding">
 
 <!--
@@ -12,15 +12,18 @@
       </form>
 -->
 
-
-    <button ng-click="addUser()"></button>
+    <div>
+      <button ng-click="addUser()">Add user</button>
+    </input>
 
     <ul>
-      <div ng-repeat="user in users">
-        {{user}}
-      </div>
+      <h2>USERS</h2>
+      <li ng-repeat="user in users">
+        <button ng-click="deleteUser(user)">Delete user</button>
+      </li>
     </ul>
 
+  </div>
 
   </ion-content>
 </ion-view>

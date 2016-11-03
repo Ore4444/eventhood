@@ -31,10 +31,12 @@ angular.module('starter.services', [])
     };
   })
 
-  .factory('UserService', ['fireBaseInit', function(fireBaseInit) {
+  .factory('UserService', ['fireBaseInit', function(fireBaseInit, $q) {
 
     let db = fireBaseInit.dataBase,
         users = [],
+        deferred = $q.defer(),
+        initialized = false,
         ref = db.ref("users");
 
     function getKey() {
@@ -43,28 +45,13 @@ angular.module('starter.services', [])
 
     function addUser(userData) {
       let key = getKey();
-/*
-      {
-        "id": 0,
-        "name": {
-        "first": "",
-          "last": ""
-      },
-        "email": "",
-        "phone": 0,
-        "spots_left": 0,
-        "spots_total": 0,
-        "money_left": 0,
-        "money_total": 0,
-        "google_login_token": "",
-        "events": [0]
-      }
-*/
-      db.ref('users/' + key).set(userData);
+          userData.id = key;
+
+        db.ref('users/' + key).set(userData);
     }
 
     function updateUserById(userId, data) {
-      db.ref('users/' + key).update(data);
+      db.ref('users/' + userId).update(data);
     }
 
     function deleteUserById(userId) {
@@ -73,8 +60,11 @@ angular.module('starter.services', [])
 
     ref.on("value", function(snapshot) {
         users = snapshot.val();
+        initialized = true;
+        deferred.resolve('success');
     }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
+        console.log("The read failed: " + errorObject.code);
+        deferred.reject('failure');
     });
 
     function getUserById(userId){
@@ -83,35 +73,50 @@ angular.module('starter.services', [])
       })
     }
 
-    function registerUserToEvent(eventId, userId){
-      var user = getUserById(userId),
-          userEvents =  _.clone(user.events);
-
-      userEvents.push(eventId);
-
-      updateUserById(userId, {
-        events: userEvents
-      });
+    function init(){
+      if (!initialized) {
+        return deferred.promise;
+      }
+      return $q.resolve('success');
     }
 
     function getAllUsers() {
       return users;
     }
-    
+
+    function registerUserToEvent(eventId, userId){
+      var user = getUserById(userId);
+          user.events.push(eventId);
+          updateUserById(userId, user);
+    }
+
+    function deleteUserFromEvent(userId, eventId){
+        var user = getUserById(userId),
+          events = _.filter(user.events, (item) => {
+            return item !== eventId;
+          });
+        event.events = events;
+        updateUserById(eventId, event);
+    }
+
     return {
       addUser: addUser,
       updateUserById: updateUserById,
       getUserById: getUserById,
       deleteUserById: deleteUserById,
       registerUserToEvent: registerUserToEvent,
-      getAllUsers: getAllUsers
+      deleteUserFromEvent: deleteUserFromEvent,
+      getAllUsers: getAllUsers,
+      init: init
     };
   }])
 
-  .factory('EventService', ['fireBaseInit', function(fireBaseInit) {
+  .factory('EventService', ['fireBaseInit','$q', function(fireBaseInit, $q) {
 
     let db = fireBaseInit.dataBase,
         ref = db.ref("events"),
+        deferred = $q.defer(),
+        initialized = false,
         events = [];
 
     function getKey() {
@@ -119,49 +124,67 @@ angular.module('starter.services', [])
     }
 
     function addEvent(eventData) {
-/*      {
-        "title": "",
-        "timestamp": 0, //timestamp of beginning of first event
-        "min_persons": 0,
-        "max_persons": 0,
-        "location": "",
-        "hours_before_cant_regret": 0,
-        "hours_before_close_registration": 0,
-        "persons": [124, 14]
-      }*/
-
       let key = getKey();
+        eventData.id = key;
         db.ref('events/' + key).set(eventData);
     }
 
     function updateEventById(eventId, data) {
-      db.ref('events/' + key).update(data);
+      db.ref('events/' + eventId).update(data);
     }
 
     function getEventById(eventId){
-      return _.find(events, (event)=>{
-        return event.id === eventId;
-      })
+      return events[eventId];
     }
 
     function deleteEventById(eventId) {
       db.ref('events/' + eventId).remove();
     }
 
+    function init(){
+      if (!initialized) {
+        return deferred.promise;
+      }
+      return $q.resolve('success');
+    }
 
     ref.on("value", function(snapshot) {
-      events = snapshot.val()
+      events = snapshot.val() || [];
+      initialized = true;
+      deferred.resolve('success');
     }, function (errorObject) {
       console.log("The read failed: " + errorObject.code);
+      deferred.reject('failure');
     });
 
+    function getAllEvents() {
+      return events;
+    }
+
+    function registerUserToEvent(userId, eventId){
+      var event = getEventById(eventId);
+          event.persons.push(userId);
+          updateEventById(eventId, event);
+    }
+
+   function deleteEventFromUser(userId, eventId){
+     var event = getEventById(eventId),
+         persons = _.filter(event.persons, (item) => {
+           return item !== userId;
+         });
+         event.persons = persons;
+         updateEventById(eventId, event);
+   }
 
     return {
       addEvent: addEvent,
       updateEventById: updateEventById,
       getEventById: getEventById,
       deleteEventById: deleteEventById,
-      events: events
+      registerUserToEvent: registerUserToEvent,
+      deleteEventFromUser: deleteEventFromUser,
+      getAllEvents: getAllEvents,
+      init: init
     };
   }])
 

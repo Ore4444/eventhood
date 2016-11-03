@@ -4,7 +4,6 @@
       <h2>Entrances left <br>7/8</h2>
       <h4>Valid until 28/11 2016</h4>
 
-
       <div class="options">
         <span>
           <i class="ion-clipboard"></i>
@@ -15,85 +14,17 @@
           All Events
         </span>
       </div>
-
+     <button ng-click="addEvent()">Add events</button>
 
       <ul class="list">
-        <li class="item">
+        <li class="item" ng-repeat="event in events" class="item">
           <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
+            <div>{{ event.title}},{{ event.timestamp}}</div>
+            <div>{{ event.location}}</div>
           </div>
-          <button class="button button-small cancel-disabled">Cancel</button>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <button class="button button-small button button-assertive">Cancel</button>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <button class="button button-small button button-balanced">Register</button>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-         <span class="full">Full</span>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <span class="full">Full</span>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <span class="full">Full</span>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <span class="full">Full</span>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <span class="full">Full</span>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <span class="full">Full</span>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <span class="full">Full</span>
-        </li>
-        <li class="item">
-          <div>
-            <div>Pilates, Sunday, 11/11/16, 19:15</div>
-            <div>Floor 21, Ofri</div>
-          </div>
-          <span class="full">Full</span>
+          <button ng-if="true" class="button button-small cancel-disabled">Cancel</button>
+          <button ng-if="false" class="button button-small button button-balanced">Register</button>
+          <span ng-if="false" class="full">Full</span>
         </li>
       </ul>
 
