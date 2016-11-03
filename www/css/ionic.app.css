@@ -9832,7 +9832,10 @@ body .events {
     display: flex;
     justify-content: space-between; }
     body .events .options span {
-      cursor: pointer; }
+      cursor: pointer;
+      font-weight: normal; }
+      body .events .options span.bold {
+        font-weight: bold; }
     body .events .options i {
       font-size: 30px;
       margin-right: 8px;
@@ -9845,6 +9848,12 @@ body .events {
       font-weight: 500;
       display: flex;
       justify-content: space-around; }
+      body .events .list .item .info {
+        width: calc(100% - 53px); }
+        body .events .list .item .info div {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap; }
       body .events .list .item .button {
         width: 53px;
         height: 31px; }
