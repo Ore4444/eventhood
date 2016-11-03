@@ -9,6 +9,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="angularfire" level="application" />
-    <orderEntry type="library" name="eventhood node_modules" level="project" />
+    <orderEntry type="library" name="firebase-app" level="application" />
+    <orderEntry type="library" name="firebase-database" level="application" />
   </component>
 </module>
