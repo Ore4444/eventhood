@@ -9860,3 +9860,20 @@ ion-view[state="login"] .button.button-positive {
   width: 95%;
   margin-left: auto;
   margin-right: auto; }
+
+.admin-settings a {
+  text-decoration: none;
+  color: #444; }
+
+.admin-settings .add {
+  font-size: 26px;
+  text-align: center; }
+
+.event-settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; }
+  .event-settings label {
+    display: block; }
+  .event-settings input {
+    width: 100%; }
