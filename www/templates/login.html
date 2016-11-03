@@ -1,3 +1,18 @@
 <div id="ctrl-as-exmpl" ng-controller="loginController as login">
 <h1>test</h1>
+  <button class="button button-block button-positive" ng-click="login.googleLogin()">
+    Sign-In
+  </button>
+
+  <div ng-hide="login.authData" class="card" ng-click="login.googleLogin()">
+    <button class="item">
+      Log In with Facebook
+    </button>
+  </div>
+
+  <div class="card" ng-show="login.authData">
+    <div class="item item-text-wrap">
+      Hello {{authData.facebook.displayName}}!
+    </div>
+  </div>
 </div>
