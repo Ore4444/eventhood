@@ -47,9 +47,9 @@ angular.module('starter.services', [])
       {
         "id": 0,
         "name": {
-        "first": "",
+          "first": "",
           "last": ""
-      },
+        },
         "email": "",
         "phone": 0,
         "spots_left": 0,
@@ -64,7 +64,7 @@ angular.module('starter.services', [])
     }
 
     function updateUserById(userId, data) {
-      db.ref('users/' + key).update(data);
+      db.ref('users/' + userId).update(data);
     }
 
     function deleteUserById(userId) {
@@ -97,7 +97,7 @@ angular.module('starter.services', [])
     function getAllUsers() {
       return users;
     }
-    
+
     return {
       addUser: addUser,
       updateUserById: updateUserById,
