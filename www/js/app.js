@@ -95,32 +95,32 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     }
                 }
             })
-          .state('tab.my-settings', {
-            url: '/my-settings',
-            views: {
-              'tab-my-settings': {
-                templateUrl: 'templates/tab-my-settings.html',
-                // controller: 'MySettingsController'
-              }
-            }
-          })
-          .state('tab.admin-settings', {
-            url: '/admin-settings',
-            views: {
-              'tab-admin-settings': {
-                templateUrl: 'templates/admin-settings.html'
-              }
-            }
-          })
-          .state('tab.admin-users', {
-            url: '/admin-users',
-            views: {
-              'tab-admin-settings': {
+            .state('tab.my-settings', {
+                url: '/my-settings',
+                views: {
+                    'tab-my-settings': {
+                        templateUrl: 'templates/tab-my-settings.html',
+                        // controller: 'MySettingsController'
+                    }
+                }
+            })
+            .state('tab.admin-settings', {
+                url: '/admin-settings',
+                views: {
+                    'tab-admin-settings': {
+                        templateUrl: 'templates/admin-settings.html'
+                    }
+                }
+            })
+            .state('tab.admin-users', {
+                url: '/admin-users',
+                views: {
+                    'tab-admin-settings': {
                 templateUrl: 'templates/admin-users.html',
                 controller: 'ManageUsersController'
-              }
-            }
-          })
+                    }
+                }
+            })
           .state('tab.edit-user', {
             url: '/edit-user/:userId',
             params: {
@@ -133,24 +133,25 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
               }
             }
           })
-          .state('tab.admin-events', {
-            url: '/admin-events',
-            views: {
-              'tab-admin-settings': {
-                templateUrl: 'templates/admin-events.html'
-              }
-            }
-          })
-          .state('tab.edit-event', {
-            url: '/edit-event?id',
-            params: {
-              id: null
-            },
-            views: {
-              'tab-admin-settings': {
-                templateUrl: 'templates/edit-event.html'
-              }
-            }
+            .state('tab.admin-events', {
+                url: '/admin-events',
+                views: {
+                    'tab-admin-settings': {
+                        templateUrl: 'templates/admin-events.html',
+                        controller: 'AdminEventsController'
+                    }
+                }
+            })
+            .state('tab.edit-event', {
+                url: '/edit-event?id',
+                params: {
+                    id: null
+                },
+                views: {
+                    'tab-admin-settings': {
+                        templateUrl: 'templates/edit-event.html'
+                    }
+                }
           });
 
 

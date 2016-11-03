@@ -1,4 +1,6 @@
 .admin-settings {
+  display: flex;
+  flex-direction: column;
   a {
     text-decoration: none;
     color: #444;
@@ -7,12 +9,6 @@
     font-size: 26px;
     text-align: center;
   }
-}
-
-.event-settings {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   label {
     display: block;
   }
