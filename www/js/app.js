@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'starter.services', 'firebase'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -23,7 +23,9 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicCloudProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+
+  $ionicConfigProvider.tabs.position('bottom');
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -43,11 +45,6 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
     abstract: true,
     templateUrl: 'templates/tabs.html'
   })
-    .state('tab.my-events', {
-      url: '/my-events',
-      controller: 'MyEventsController',
-      templateUrl: 'templates/my-events.html'
-    })
 
   // Each tab has its own nav history stack:
 
@@ -61,12 +58,12 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
     }
   })
 
-    .state('tab.settings', {
-      url: '/settings',
+    .state('tab.my-settings', {
+      url: '/my-settings',
       views: {
-        'tab-settings': {
-          templateUrl: 'templates/tab-settings.html',
-          // controller: 'MyAccountController'
+        'tab-my-settings': {
+          templateUrl: 'templates/tab-my-settings.html',
+          // controller: 'MySettingsController'
         }
       }
     })
@@ -92,11 +89,5 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/settings');
-
-  $ionicCloudProvider.init({
-    "core": {
-      "app_id": "c6e768bb"
-    }
-  });
 
 });
