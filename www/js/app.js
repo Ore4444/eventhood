@@ -31,37 +31,45 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
   // Each state's controller can be found in controllers.js
   $stateProvider
 
+  .state('login', {
+    url: '/login',
+    templateUrl: 'templates/login.html'
+  })
+
+  /*.state('my-events', {
+    url: '/my-events',
+    controller: 'myEventsController',
+    templateUrl: 'templates/my-events.html'
+  })*/
+
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'
   })
 
-  // setup an abstract state for the tabs directive
-  .state('login', {
-    url: '/login',
-    controller: 'loginController',
-    templateUrl: 'templates/login.html'
-  })
-
-    .state('my-events', {
-      url: '/my-events',
-      controller: 'myEventsController',
-      templateUrl: 'templates/my-events.html'
-    })
-
   // Each tab has its own nav history stack:
 
-  .state('tab.my.events', {
+  .state('tab.my-events', {
     url: '/my-events',
     views: {
-      'my-events': {
-        templateUrl: 'templates/my-events.html',
-        controller: 'MyEventsCtrl'
+      'tab-my-events': {
+        templateUrl: 'templates/tab-events.html',
+        controller: 'MyEventsController'
       }
     }
   })
+
+    .state('tab.settings', {
+      url: '/settings',
+      views: {
+        'tab-settings': {
+          templateUrl: 'templates/tab-settings.html',
+          // controller: 'MyAccountController'
+        }
+      }
+    })
 
   .state('tab.chats', {
       url: '/chats',
@@ -80,20 +88,10 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
           controller: 'ChatDetailCtrl'
         }
       }
-    })
-
-  .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
-      }
-    }
-  });
+    });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/my-events');
+  $urlRouterProvider.otherwise('/tab/settings');
 
   $ionicCloudProvider.init({
     "core": {

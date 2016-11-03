@@ -1,4 +1,3 @@
 angular.module('starter.controllers', [])
-  .controller('myEventsController', function() {
-
+  .controller('MyEventsController', function() {
   });

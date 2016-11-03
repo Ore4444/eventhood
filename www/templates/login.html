@@ -1,18 +1,23 @@
-<div id="ctrl-as-exmpl" ng-controller="loginController as login">
-<h1>test</h1>
-  <button class="button button-block button-positive" ng-click="login.googleLogin()">
-    Sign-In
-  </button>
-
-  <div ng-hide="login.authData" class="card" ng-click="login.googleLogin()">
-    <button class="item">
-      Log In with Facebook
-    </button>
-  </div>
-
-  <div class="card" ng-show="login.authData">
-    <div class="item item-text-wrap">
-      Hello {{authData.facebook.displayName}}!
+<ion-view view-title="Welcome">
+  <ion-content>
+    <div class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">First Name</span>
+        <input type="text" placeholder="Tamar">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Last Name</span>
+        <input type="text" placeholder="Karlinsky">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Email</span>
+        <input type="email" placeholder="tamark@ironsrc.com">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Email</span>
+        <input type="tel" placeholder="054-1192284">
+      </label>
     </div>
-  </div>
-</div>
+    <a href="#/tab/my-events" class="button button-block button-positive">Done</a>
+  </ion-content>
+</ion-view>
