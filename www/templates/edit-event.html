@@ -1,45 +1,47 @@
 <ion-view view-title="Event Settings">
     <ion-content>
-        <div class="event-settings">
+        <div class="admin-settings">
             <ul class="list">
                 <li class="item">
                     <label>Event Name</label>
-                    <input/>
+                    <input ng-model="event.title"/>
                 </li>
                 <li class="item">
                     <label>When</label>
                     <label class="item item-input">
-                        <input type="date">
+                        <input type="date" ng-model="event.date">
                     </label>
                 </li>
                 <li class="item">
                     <label>Time</label>
                     <label class="item item-input">
-                        <input type="time">
+                        <input type="time" ng-model="event.date">
                     </label>
                 </li>
                 <li class="item">
                     <label>Description</label>
-                    <input/>
+                    <input ng-model="event.description"/>
                 </li>
                 <li class="item">
                     <label>Location</label>
-                    <input/>
+                    <input ng-model="event.location"/>
                 </li>
                 <li class="item">
                     <label>Don't allow cancel registration</label>
-                    <input/>
+                    <input type="number" ng-model="event.hours_before_cant_regret"/>
                 </li>
                 <li class="item">
                     <label>Max number of people</label>
-                    <input type="number"/>
+                    <input ng-model="event.max_persons" type="number"/>
                 </li>
-                <li class="item">
-                    <label>Min number of people</label>
-                    <input type="number"/>
+                <li ng-if="users.length" class="item">
+                    <label>users [{{users.length}}]</label>
+                    <ul class="list">
+                        <li ng-repeat="user in users">{{user.name}}</li>
+                    </ul>
                 </li>
             </ul>
-            <button class="button button-small button button-balanced">Save</button>
+            <button ng-click="save(event)" class="button button-small button button-balanced">Save</button>
         </div>
     </ion-content>
 </ion-view>

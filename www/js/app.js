@@ -23,19 +23,58 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         });
     })
 
-  .controller('ManageUsersController', function($scope, UserService) {
-    $scope.test = 'VARIABLE';
+    .controller('ManageUsersController', function ($scope, UserService) {
+        $scope.test = 'VARIABLE';
 
-    $scope.users = UserService.getAllUsers();
+        $scope.users = UserService.getAllUsers();
 
-    $scope.$watch(() => {
-      return UserService.getAllUsers().length;
-    }, (newValue, oldValue) => {
-      $scope.users = UserService.getAllUsers();
-    });
+        $scope.$watch(() => {
+            return UserService.getAllUsers().length;
+        }, (newValue, oldValue) => {
+            $scope.users = UserService.getAllUsers();
+        });
 
-    // $scope.users = UserService.getAllUsers();
-  })
+        // $scope.users = UserService.getAllUsers();
+    })
+
+    .controller('AdminEventsController', function ($scope, EventService) {
+        EventService.init().then(()=> {
+            $scope.events = EventService.getAllEvents();
+            console.log($scope.events);
+        })
+    })
+    .controller('EditEventsController', function ($scope, EventService, UserService, $state, $ionicHistory) {
+        const eventId = parseInt($state.params.id);
+        EventService.init().then(()=> {
+            if (!eventId) {
+                $scope.event = {};
+            } else {
+                $scope.event = EventService.getEventById(eventId);
+                $scope.event.date = new Date($scope.event.date);
+                $scope.users = [];
+                _.each($scope.event.persons || [], function (person) {
+                    var user= UserService.getUserById(parseInt(person));
+                    if(user){
+                        $scope.users.push(user);
+                    }
+                });
+            }
+            console.log($scope.event)
+        });
+        $scope.save = function (event) {
+            var savedEvent = _.clone($scope.event);
+            //convert date back to string
+            savedEvent.date = moment($scope.event.date).format('LLLL');
+            if (eventId) {
+                //edit event
+                EventService.updateEventById(eventId, savedEvent);
+            } else {
+                //add event
+                EventService.addEvent(savedEvent);
+            }
+            $ionicHistory.goBack();
+        }
+    })
 
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
@@ -91,22 +130,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 url: '/admin-users',
                 views: {
                     'tab-admin-settings': {
-                templateUrl: 'templates/admin-users.html',
-                controller: 'ManageUsersController'
+                        templateUrl: 'templates/admin-users.html',
+                        controller: 'ManageUsersController'
                     }
                 }
             })
-          .state('tab.admin-user', {
-            url: '/admin-user/:userId',
-            params: {
-              userId: null
-            },
-            views: {
-              'tab-admin-settings': {
-                templateUrl: 'templates/admin-user.html',
-              }
-            }
-          })
+            .state('tab.admin-user', {
+                url: '/admin-user/:userId',
+                params: {
+                    userId: null
+                },
+                views: {
+                    'tab-admin-settings': {
+                        templateUrl: 'templates/admin-user.html',
+                    }
+                }
+            })
             .state('tab.admin-events', {
                 url: '/admin-events',
                 views: {
@@ -123,10 +162,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 },
                 views: {
                     'tab-admin-settings': {
-                        templateUrl: 'templates/edit-event.html'
+                        templateUrl: 'templates/edit-event.html',
+                        controller: 'EditEventsController'
                     }
                 }
-          });
+            });
 
 
         // if none of the above states are matched, use this as the fallback
