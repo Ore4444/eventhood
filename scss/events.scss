@@ -18,6 +18,10 @@ body {
       justify-content: space-between;
       span {
         cursor: pointer;
+        font-weight: normal;
+        &.bold {
+          font-weight: bold;
+        }
       }
       i {
         font-size: 30px;
@@ -33,6 +37,14 @@ body {
         font-weight: 500;
         display: flex;
         justify-content: space-around;
+        .info {
+          width: calc(100% - 53px);
+          div {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
         .button {
           width: 53px;
           height: 31px;

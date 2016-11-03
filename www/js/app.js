@@ -24,28 +24,32 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     })
 
     .controller('ManageUsersController', function ($scope, UserService) {
-    UserService.init()
-      .then(() => {
-        $scope.users = UserService.getAllUsers();
-        console.log($scope.users);
-      });
+        UserService.init()
+            .then(() => {
+                $scope.users = UserService.getAllUsers();
+                console.log($scope.users);
+            });
 
         $scope.$watch(() => {
             return UserService.getAllUsers().length;
-    }, () => {
+        }, () => {
             $scope.users = UserService.getAllUsers();
         });
 
-    $scope.$on('$stateChangeSuccess', () => {
-      $scope.users = UserService.getAllUsers();
+        $scope.$on('$stateChangeSuccess', () => {
+            $scope.users = UserService.getAllUsers();
+        })
     })
-  })
 
     .controller('AdminEventsController', function ($scope, EventService) {
         EventService.init().then(()=> {
             $scope.events = EventService.getAllEvents();
             console.log($scope.events);
-        })
+        });
+
+        $scope.$on('$stateChangeSuccess', () => {
+            $scope.events = EventService.getAllEvents();
+        });
     })
     .controller('EditEventsController', function ($scope, EventService, UserService, $state, $ionicHistory) {
         const eventId = parseInt($state.params.id);
@@ -57,8 +61,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 $scope.event.date = new Date($scope.event.date);
                 $scope.users = [];
                 _.each($scope.event.persons || [], function (person) {
-                    var user= UserService.getUserById(parseInt(person));
-                    if(user){
+                    var user = UserService.getUserById(parseInt(person));
+                    if (user) {
                         $scope.users.push(user);
                     }
                 });
@@ -79,6 +83,116 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             $ionicHistory.goBack();
         }
     })
+    .controller('MyEventsController', function ($scope, EventService, UserService, $state, $ionicHistory) {
+        var userId = 1478201238572;
+
+        function init() {
+            UserService.init()
+                .then(EventService.init).then(() => {
+                $scope.view = "myEvents";
+                getEvents();
+            });
+        }
+
+        function getUsersEvents() {
+            var events = [];
+            var user = UserService.getUserById(userId);
+            $scope.userEvents = [];
+            _.each(user.events || [], function (event) {
+                events.push(EventService.getEventById(event));
+            });
+            return events;
+
+        }
+
+        function getAllEvents() {
+            return EventService.getAllEvents();
+        }
+
+        function getEvents() {
+            var events = [];
+            if ($scope.view === "myEvents") {
+                events = getUsersEvents()
+            } else {
+                events = getAllEvents();
+            }
+
+            //process events data
+            $scope.events = _.compact(_.map(events, function (event) {
+                var eventStartTime = new Date(event.date);
+                //filter out old events
+                if (eventStartTime < Date.now()) {
+                    return null;
+                }
+
+                //check if the user is registered to event
+                event.persons = event.persons || []
+                if ((event.persons).indexOf(userId) > -1) {
+                    //check if user can cancel the event
+                    var hoursTillTheEvent = (eventStartTime - Date.now()) / (1000 * 60 * 60);
+                    if (hoursTillTheEvent > event.hours_before_cant_regret) {
+                        event.button = "cancel";
+                    } else {
+                        event.button = "cancel-disabled";
+                    }
+                } else {
+                    //check if event is already full
+                    if (event.persons.length === event.max_persons) {
+                        event.button = "full";
+                    } else {
+                        event.button = "register";
+                    }
+                }
+
+                console.log(event)
+                return event;
+            }));
+        }
+
+        $scope.register = function (eventId) {
+            //update event object
+            var event = EventService.getEventById(eventId);
+            if (!event.persons) {
+                event.persons = [];
+            }
+            event.persons.push(userId);
+            event.persons = _.uniq(event.persons);
+            EventService.updateEventById(eventId, event);
+
+            //update user object
+            var user = UserService.getUserById(userId);
+            if (!user.events) {
+                user.events = [];
+            }
+            user.events.push(eventId);
+            UserService.updateUserById(userId, user);
+            //refresh the data
+            init();
+        };
+
+        $scope.cancel = function (eventId) {
+            //update event object
+            var event = EventService.getEventById(eventId);
+            event.persons = _.without(event.persons, userId);
+            EventService.updateEventById(eventId, event);
+
+            //update user object
+            var user = UserService.getUserById(userId);
+            user.events = _.without(user.events, eventId);
+            UserService.updateUserById(userId, user);
+            //refresh the data
+            init();
+        };
+
+        $scope.switchView = function (view) {
+            $scope.view = view;
+            getEvents();
+        }
+        $scope.$on('$stateChangeSuccess', init);
+
+        init();
+    })
+
 
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
@@ -102,7 +216,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 templateUrl: 'templates/tabs.html'
             })
 
-  // Each tab has its own nav history stack:
+            // Each tab has its own nav history stack:
 
             .state('tab.my-events', {
                 url: '/my-events',
@@ -139,15 +253,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     }
                 }
             })
-          .state('tab.edit-user', {
-            url: '/edit-user/:userId',
+            .state('tab.edit-user', {
+                url: '/edit-user/:userId',
                 params: {
                     userId: null
                 },
                 views: {
                     'tab-admin-settings': {
-                templateUrl: 'templates/edit-user.html',
-                controller: 'EditUserController',
+                        templateUrl: 'templates/edit-user.html',
+                        controller: 'EditUserController',
                     }
                 }
             })

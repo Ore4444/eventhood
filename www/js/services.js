@@ -31,7 +31,7 @@ angular.module('starter.services', [])
     };
   })
 
-  .factory('UserService', ['fireBaseInit', function(fireBaseInit, $q) {
+  .factory('UserService', ['fireBaseInit','$q', function(fireBaseInit, $q) {
 
     let db = fireBaseInit.dataBase,
         users = [],

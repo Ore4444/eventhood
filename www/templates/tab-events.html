@@ -1,35 +1,39 @@
 <ion-view view-title="IS Pilates">
-  <ion-content>
-    <div class="events">
-      <h2>Entrances left <br>7/8</h2>
-      <h4>Valid until 28/11 2016</h4>
+    <ion-content>
+        <div class="events">
+            <h2>Entrances left <br>7/8</h2>
+            <h4>Valid until 28/11 2016</h4>
 
-      <div class="options">
-        <span>
+            <div class="options">
+        <span ng-click="switchView('myEvents')" ng-class="{bold: view === 'myEvents'}">
           <i class="ion-clipboard"></i>
           My Events
         </span>
-        <span>
+        <span ng-click="switchView('allEvents')" ng-class="{bold: view === 'allEvents'}">
           <i class="ion-calendar"></i>
           All Events
         </span>
-      </div>
-     <button ng-click="addEvent()">Add events</button>
+            </div>
+            <ul class="list">
+                <li class="item" ng-repeat="event in events track by $index" class="item">
+                    <div class="info">
+                        <div>{{ event.title}}</div>
+                        <div>{{ event.date}}</div>
+                        <div>{{ event.location}}</div>
+                    </div>
+                    <button ng-if="event.button=='cancel-disabled'" class="button button-small cancel-disabled" disabled="disabled">Cancel
+                    </button>
+                    <button ng-if="event.button=='cancel'" ng-click="cancel(event.id)" class="button button-small button button-assertive">Cancel
+                    </button>
+                    <button ng-if="event.button=='register'" ng-click="register(event.id)"
+                            class="button button-small button button-balanced">Register
+                    </button>
+                    <span ng-if="event.button=='full'" class="full">Full</span>
+                </li>
+            </ul>
 
-      <ul class="list">
-        <li class="item" ng-repeat="event in events" class="item">
-          <div>
-            <div>{{ event.title}},{{ event.timestamp}}</div>
-            <div>{{ event.location}}</div>
-          </div>
-          <button ng-if="true" class="button button-small cancel-disabled">Cancel</button>
-          <button ng-if="false" class="button button-small button button-balanced">Register</button>
-          <span ng-if="false" class="full">Full</span>
-        </li>
-      </ul>
-
-    </div>
-  </ion-content>
+        </div>
+    </ion-content>
 </ion-view>
 
 
