@@ -47,7 +47,7 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
 
     .state('my-events', {
       url: '/my-events',
-      controller: 'myEventsController',
+      controller: 'MyEventsController',
       templateUrl: 'templates/my-events.html'
     })
 
