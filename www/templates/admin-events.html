@@ -1,5 +1,16 @@
 <ion-view view-title="Events">
-  <ion-content>
-    zsdsdbdfs
-  </ion-content>
+    <ion-content>
+        <div class="admin-settings">
+            <a href="#/tab/edit-event" class="add"><i class="ion-ios-plus"></i></a>
+            <ul class="list">
+                <li ng-repeat="(key, value) in events" class="item">
+                    <a href="#/tab/edit-event?id={{value.id}}">
+                        <div>
+                            <div>{{value.title}}, {{value.date}}</div>
+                            <div>{{value.location}}</div>
+                        </div>
+                </a></li>
+            </ul>
+        </div>
+    </ion-content>
 </ion-view>

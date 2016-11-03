@@ -1,5 +1,9 @@
 <ion-view view-title="Users">
   <ion-content>
-    zsdsdbdfs
+    <div class="admin-settings">
+      <ion-list>
+        <ion-item ng-repeat="(id, user) in users" href="#/tab/edit-user/{{id}}">{{user.name}}</ion-item>
+      </ion-list>
+    </div>
   </ion-content>
 </ion-view>
