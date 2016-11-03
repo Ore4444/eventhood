@@ -1,0 +1,22 @@
+.admin-settings {
+  a {
+    text-decoration: none;
+    color: #444;
+  }
+  .add {
+    font-size: 26px;
+    text-align: center;
+  }
+}
+
+.event-settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  label {
+    display: block;
+  }
+  input {
+    width:100%;
+  }
+}
