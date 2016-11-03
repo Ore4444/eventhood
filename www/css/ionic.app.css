@@ -9815,6 +9815,47 @@ a.button {
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
 
+body .events {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center; }
+  body .events h2 {
+    font-wight: bold;
+    margin-top: 20px;
+    text-align: center; }
+  body .events .options {
+    width: 100%;
+    padding: 30px 30px 15px 30px;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between; }
+    body .events .options span {
+      cursor: pointer; }
+    body .events .options i {
+      font-size: 30px;
+      margin-right: 8px;
+      display: inline-block; }
+  body .events .list {
+    width: 100%; }
+    body .events .list .item {
+      padding: 16px 25px 5px 25px;
+      font-size: 15px;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-around; }
+      body .events .list .item .button {
+        width: 53px;
+        height: 31px; }
+        body .events .list .item .button.cancel-disabled {
+          border: 1px solid rgba(197, 197, 197, 0.76); }
+      body .events .list .item .full {
+        width: 53px;
+        height: 31px;
+        display: inline-block;
+        text-align: center; }
+
 ion-view[state="login"] .button.button-positive {
   width: 95%;
   margin-left: auto;

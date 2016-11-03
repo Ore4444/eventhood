@@ -23,8 +23,10 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicCloudProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicCloudProvider, $ionicConfigProvider) {
 
+
+  $ionicConfigProvider.tabs.position('bottom');
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
@@ -82,7 +84,16 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
           controller: 'ChatDetailCtrl'
         }
       }
+    })
+    .state('tab.admin-settings', {
+      url: '/admin-settings',
+      views: {
+        'tab-admin-settings': {
+          templateUrl: 'templates/admin-settings.html'
+        }
+      }
     });
+
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/settings');
