@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'starter.services', 'firebase'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -53,12 +53,12 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
 
   // Each tab has its own nav history stack:
 
-  .state('tab.dash', {
-    url: '/dash',
+  .state('tab.my.events', {
+    url: '/my-events',
     views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
+      'my-events': {
+        templateUrl: 'templates/my-events.html',
+        controller: 'MyEventsCtrl'
       }
     }
   })
@@ -93,17 +93,11 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/my-events');
 
   $ionicCloudProvider.init({
     "core": {
       "app_id": "c6e768bb"
-    },
-    "auth": {
-      "google": {
-        "webClientId": "124546199347-hn9r9uer5pcai69rr62n9igp7855ujmc.apps.googleusercontent.com",
-        "scope": []
-      }
     }
   });
 

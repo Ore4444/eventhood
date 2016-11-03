@@ -2,6 +2,7 @@ class BaseRepository {
 
   constructor(firebaseProvider){
     this.fireBase = firebaseProvider.getInstance();
+    debugger;
     this.model = null;
   }
 
