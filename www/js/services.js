@@ -31,11 +31,13 @@ angular.module('starter.services', [])
     };
   })
 
-  .factory('UserService', ['fireBaseInit', function(fireBaseInit) {
+  .factory('UserService', ['$q', 'fireBaseInit', function($q, fireBaseInit) {
 
     let db = fireBaseInit.dataBase,
-        users = [],
-        ref = db.ref("users");
+      users = [],
+      deferred = $q.defer(),
+      initialized = false,
+      ref = db.ref("users");
 
     function getKey() {
       return new Date().getTime();
@@ -43,23 +45,8 @@ angular.module('starter.services', [])
 
     function addUser(userData) {
       let key = getKey();
-/*
-      {
-        "id": 0,
-        "name": {
-          "first": "",
-          "last": ""
-        },
-        "email": "",
-        "phone": 0,
-        "spots_left": 0,
-        "spots_total": 0,
-        "money_left": 0,
-        "money_total": 0,
-        "google_login_token": "",
-        "events": [0]
-      }
-*/
+      userData.id = key;
+
       db.ref('users/' + key).set(userData);
     }
 
@@ -72,26 +59,34 @@ angular.module('starter.services', [])
     }
 
     ref.on("value", function(snapshot) {
-        users = snapshot.val();
+      users = snapshot.val();
+      initialized = true;
+      deferred.resolve('success');
     }, function (errorObject) {
       console.log("The read failed: " + errorObject.code);
+      deferred.reject('failure');
     });
 
     function getUserById(userId){
-      return _.find(users, (user)=>{
-         return user.id === userId;
-      })
+      return users[parseInt(userId)];
     }
 
     function registerUserToEvent(eventId, userId){
       var user = getUserById(userId),
-          userEvents =  _.clone(user.events);
+        userEvents =  _.clone(user.events);
 
       userEvents.push(eventId);
 
       updateUserById(userId, {
         events: userEvents
       });
+    }
+
+    function init(){
+      if (!initialized) {
+        return deferred.promise;
+      }
+      return $q.resolve('success');
     }
 
     function getAllUsers() {
@@ -104,7 +99,8 @@ angular.module('starter.services', [])
       getUserById: getUserById,
       deleteUserById: deleteUserById,
       registerUserToEvent: registerUserToEvent,
-      getAllUsers: getAllUsers
+      getAllUsers: getAllUsers,
+      init: init
     };
   }])
 

@@ -1,0 +1,41 @@
+<ion-view view-title="User">
+  <ion-content>
+    <ion-list class="user-settings">
+      <ion-item class="item-icon-left">
+        <i class="icon ion-email"></i><input ng-model="user.email" type="email" placeholder="Email" />
+      </ion-item>
+      <ion-item class="item-icon-left">
+        <i class="icon ion-ios-telephone-outline"></i><input ng-model="user.phone" type="tel" placeholder="Phone" />
+      </ion-item>
+      <ion-item class="item-icon-left">
+        <i class="icon ion-ios-person"></i><input ng-model="user.name" type="text" placeholder="Full Name" />
+      </ion-item>
+      <ion-item class="item-divider">Payments</ion-item>
+      <ion-item class="item-input">
+        <label class="input-label">Events left</label>
+        <input type="number" ng-model="user.events_left" />
+      </ion-item>
+      <ion-item>
+        <label class="justify-form-row">
+          <span class="input-label">Valid Time Frame</span>
+          <span class="justify-form-column">
+            <input type="date" ng-model="user.date_start" />-<input type="date" ng-model="user.date_end" />
+          </span>
+        </label>
+      </ion-item>
+      <ion-item class="item-input">
+        <label class="input-label">Money Paid</label>
+        <input type="number" ng-model="user.money_left" value="5" />
+      </ion-item>
+      <ion-item class="justify-form-row">
+        <label class="input-label">Payment Method</label>
+        <select class="item-note" ng-model="user.payment_method">
+          <option value="cash">Cash</option>
+          <option value="app" selected>App</option>
+          <option value="other">Other</option>
+        </select>
+      </ion-item>
+    </ion-list>
+    <button id="save-user" class="button button-block button-balanced" ng-click="saveUser(user)">Save</button>
+  </ion-content>
+</ion-view>

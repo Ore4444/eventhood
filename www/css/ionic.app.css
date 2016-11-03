@@ -9877,3 +9877,17 @@ ion-view[state="login"] .button.button-positive {
     display: block; }
   .event-settings input {
     width: 100%; }
+
+.user-settings input {
+  text-align: right;
+  margin-left: auto; }
+
+.justify-form-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between; }
+
+.justify-form-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
