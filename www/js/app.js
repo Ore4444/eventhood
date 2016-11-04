@@ -83,6 +83,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $scope.$on('$stateChangeSuccess', () => {
             $scope.users = UserService.getAllUsers();
         })
+
+        $scope.delete = function (id) {
+            UserService.deleteEventById(id);
+        };
     })
 
     .controller('EditUserController', function ($ionicHistory, $timeout, $stateParams, $scope, UserService) {
@@ -107,14 +111,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     })
 
     .controller('AdminEventsController', function ($scope, EventService) {
-        EventService.init().then(()=> {
-            $scope.events = EventService.getAllEvents();
-            console.log($scope.events);
-        });
+        function init() {
+            EventService.init().then(()=> {
+                $scope.events = EventService.getAllEvents();
+                console.log($scope.events);
+            });
+        }
 
-        $scope.$on('$stateChangeSuccess', () => {
-            $scope.events = EventService.getAllEvents();
-        });
+        init();
+        $scope.$on('$stateChangeSuccess', init);
+
+        $scope.delete = function (id) {
+            EventService.deleteEventById(id);
+            init();
+        };
     })
 
     .controller('EditEventsController', function ($scope, EventService, UserService, $state, $ionicHistory) {
