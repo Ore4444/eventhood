@@ -1,4 +1,4 @@
-<ion-view view-title="Settings">
+<ion-view view-title="My Info">
   <ion-nav-buttons side="right">
     <button class="button" ng-click="logout()">
       Logout
@@ -10,28 +10,25 @@
         Personal Information
       </ion-item>
       <ion-item>
-        tamark@ironsrc.com
+        {{user.email}}
       </ion-item>
       <ion-item>
-        Tamar Karlinsky
+       {{user.name}}
       </ion-item>
       <ion-item>
-        05458222000
+        {{user.phone}}
       </ion-item>
       <ion-item class="item-divider">
         Account Information
       </ion-item>
       <ion-item>
-        Total: 8, valid until 28/11/2016
+        Total: {{user.events_left}}, valid until 28/11/2016
       </ion-item>
       <ion-item class="item-divider">
         Account History
       </ion-item>
-      <ion-item>
-        Pilates, Thursday, 12/11/2016, 19:15
-      </ion-item>
-      <ion-item>
-        Pilates, Thursday, 12/11/2016, 19:15
+      <ion-item ng-repeat="event in user.events">
+        {{event.title}},  {{event.date}}
       </ion-item>
     </ion-list>
   </ion-content>

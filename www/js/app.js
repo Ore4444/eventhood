@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
 
-    .run(function ($rootScope, loggedInUser, $ionicPlatform) {
+    .run(function ($rootScope, loggedInUser, $ionicPlatform, $state) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -23,83 +23,88 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         });
 
         $rootScope.logout = loggedInUser.logout;
-    })
-
-    .controller('LoginController', function($scope, UserService, loggedInUser, $state) {
-      $scope.user = {};
-
-      function maybeRedirect() {
-        if (localStorage.getItem('loggedInUserId')) {
-          $state.go('tab.my-events');
-        }
-      }
-
-      $scope.saveUser = function(user) {
-        if (user.email && user.password) {
-          UserService.init()
-            .then(() => {
-              const userId = UserService.addUser(user);
-              loggedInUser.login(userId);
-              maybeRedirect();
-            });
-        }
-      };
-
-      $scope.$on('$stateChangeSuccess', maybeRedirect);
-    })
-    .controller('SignUpController', function($scope, UserService, loggedInUser) {
-      let userId = null;
-      $scope.user = {};
-
-      UserService.init()
-        .then(() => {
-          $scope.users = UserService.getAllUsers();
+        $rootScope.$on('$stateChangeSuccess', function () {
+            if (!localStorage.getItem('loggedInUserId')) {
+                $state.go('login');
+            }
         });
+    })
 
-      $scope.saveUser = function() {
-        debugger;
-        userId = UserService.addUser($scope.user);
-        loggedInUser.login(userId);
-      };
+    .controller('LoginController', function ($scope, UserService, loggedInUser, $state) {
+        $scope.user = {};
+
+        function maybeRedirect() {
+            if (localStorage.getItem('loggedInUserId')) {
+                $state.go('tab.my-events');
+            }
+        }
+
+        $scope.saveUser = function (user) {
+            if (user.email && user.password) {
+                UserService.init()
+                    .then(() => {
+                        const userId = UserService.addUser(user);
+                        loggedInUser.login(userId);
+                        maybeRedirect();
+                    });
+            }
+        };
+
+        $scope.$on('$stateChangeSuccess', maybeRedirect);
+    })
+
+    .controller('SignUpController', function ($scope, UserService, loggedInUser) {
+        let userId = null;
+        $scope.user = {};
+
+        UserService.init()
+            .then(() => {
+                $scope.users = UserService.getAllUsers();
+            });
+
+        $scope.saveUser = function () {
+            userId = UserService.addUser($scope.user);
+            loggedInUser.login(userId);
+        };
     })
 
     .controller('ManageUsersController', function ($scope, UserService) {
-      UserService.init()
-        .then(() => {
-          $scope.users = UserService.getAllUsers();
+        UserService.init()
+            .then(() => {
+                $scope.users = UserService.getAllUsers();
+            });
+
+        $scope.$watch(() => {
+            return UserService.getAllUsers().length;
+        }, () => {
+            $scope.users = UserService.getAllUsers();
         });
 
-      $scope.$watch(() => {
-          return UserService.getAllUsers().length;
-      }, () => {
-          $scope.users = UserService.getAllUsers();
-      });
-
-    $scope.$on('$stateChangeSuccess', () => {
-      $scope.users = UserService.getAllUsers();
+        $scope.$on('$stateChangeSuccess', () => {
+            $scope.users = UserService.getAllUsers();
+        })
     })
-  })
 
-  .controller('EditUserController', function($ionicHistory, $timeout, $stateParams, $scope, UserService) {
-    const userId = $stateParams['userId'];
+    .controller('EditUserController', function ($ionicHistory, $timeout, $stateParams, $scope, UserService) {
+        const userId = $stateParams['userId'];
 
-    UserService.init()
-      .then(() => {
-        if (userId) {
-          $scope.user = UserService.getUserById(userId);
-        }
-      });
+        UserService.init()
+            .then(() => {
+                if (userId) {
+                    $scope.user = UserService.getUserById(parseInt(userId));
+                }
+            });
 
-    $scope.saveUser = (user) => {
-      if (userId) {
-        UserService.updateUserById(userId, user);
-      } else {
-        UserService.addUser(user);
-      }
-      $ionicHistory.goBack();
-    };
+        $scope.saveUser = (user) => {
+            if (userId) {
+                UserService.updateUserById(userId, user);
+            } else {
+                UserService.addUser(user);
+            }
+            $ionicHistory.goBack();
+        };
 
-  })
+    })
 
     .controller('AdminEventsController', function ($scope, EventService) {
         EventService.init().then(()=> {
@@ -111,6 +116,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             $scope.events = EventService.getAllEvents();
         });
     })
+
     .controller('EditEventsController', function ($scope, EventService, UserService, $state, $ionicHistory) {
         const eventId = parseInt($state.params.id);
         EventService.init().then(()=> {
@@ -143,11 +149,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             $ionicHistory.goBack();
         }
     })
-    .controller('MyEventsController', function ($scope, EventService, UserService, $state, $ionicHistory) {
-        var userId = 1478201238572;
+
+    .controller('MyEventsController', function ($scope, EventService, UserService) {
+        var userId;
 
         function init() {
+            userId = parseInt(localStorage.getItem('loggedInUserId'));
             UserService.init()
+                .then(function () {
+                    $scope.user = UserService.getUserById(userId);
+                    console.log($scope.user)
+                })
                 .then(EventService.init).then(() => {
                 $scope.view = "myEvents";
                 getEvents();
@@ -156,9 +168,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
         function getUsersEvents() {
             var events = [];
-            var user = UserService.getUserById(userId);
             $scope.userEvents = [];
-            _.each(user.events || [], function (event) {
+            _.each($scope.user.events || [], function (event) {
                 events.push(EventService.getEventById(event));
             });
             return events;
@@ -200,7 +211,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     if (event.persons.length === event.max_persons) {
                         event.button = "full";
                     } else {
-                        event.button = "register";
+                        if ($scope.user.events_left > 0) {
+                            event.button = "register";
+                        } else {
+                            event.button = "register-disabled";
+                        }
                     }
                 }
 
@@ -225,6 +240,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 user.events = [];
             }
             user.events.push(eventId);
+            user.events_left -= 1;
             UserService.updateUserById(userId, user);
             //refresh the data
             init();
@@ -239,6 +255,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             //update user object
             var user = UserService.getUserById(userId);
             user.events = _.without(user.events, eventId);
+            user.events_left += 1;
             UserService.updateUserById(userId, user);
             //refresh the data
             init();
@@ -253,6 +270,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         init();
     })
 
+    .controller('MyInfoController', function ($scope, EventService, UserService) {
+        var userId;
+
+        function init() {
+            userId = parseInt(localStorage.getItem('loggedInUserId'));
+            UserService.init()
+                .then(EventService.init)
+                .then(function () {
+                    $scope.user = UserService.getUserById(userId);
+                    $scope.user.events = _.compact(_.map($scope.user.events, function (eventID) {
+                        var event = EventService.getEventById(eventID);
+                        //return only events that happened in the past
+                        return Date.now() - new Date(event.date) > 0 ? event : null;
+                    }));
+                    console.log($scope.user);
+                });
+        }
+
+        init();
+    })
 
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
@@ -264,14 +301,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $stateProvider
 
             .state('login', {
-              url: '/login',
-              templateUrl: 'templates/login.html',
-              controller: 'LoginController'
+                url: '/login',
+                templateUrl: 'templates/login.html',
+                controller: 'LoginController'
             })
             .state('sign-up', {
-              url: '/sign-up',
-              templateUrl: 'templates/sign-up.html',
-              controller: 'SignUpController'
+                url: '/sign-up',
+                templateUrl: 'templates/sign-up.html',
+                controller: 'SignUpController'
             })
 
 
@@ -293,12 +330,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     }
                 }
             })
-            .state('tab.my-settings', {
-                url: '/my-settings',
+            .state('tab.my-info', {
+                url: '/my-info',
                 views: {
-                    'tab-my-settings': {
-                        templateUrl: 'templates/tab-my-settings.html',
-                        // controller: 'MySettingsController'
+                    'tab-my-info': {
+                        templateUrl: 'templates/tab-my-info.html',
+                        controller: 'MyInfoController'
                     }
                 }
             })
@@ -326,8 +363,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 },
                 views: {
                     'tab-admin-settings': {
-                      templateUrl: 'templates/edit-user.html',
-                      controller: 'EditUserController',
+                        templateUrl: 'templates/edit-user.html',
+                        controller: 'EditUserController',
                     }
                 }
             })
