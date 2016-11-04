@@ -13,7 +13,21 @@
     display: block;
   }
   input {
-    width:100%;
+    width: 100%;
+  }
+  .event-wrap {
+    display: flex;
+    .event-info{
+      width: calc(100% - 15px);
+      div{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .ion-trash-b{
+      font-size: 22px;
+    }
   }
 }
 
