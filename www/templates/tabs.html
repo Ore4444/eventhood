@@ -16,7 +16,7 @@ navigation history that also transitions its views in and out.
   </ion-tab>
 
   <!-- Account Tab -->
-  <ion-tab title="Admin Settings" icon-off="ion-settings" icon-on="ion-settings" href="#/tab/admin-settings">
+  <ion-tab ng-if="isAdmin()" title="Admin Settings" icon-off="ion-settings" icon-on="ion-settings" href="#/tab/admin-settings">
     <ion-nav-view name="tab-admin-settings"></ion-nav-view>
   </ion-tab>
 </ion-tabs>

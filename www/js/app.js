@@ -23,15 +23,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         });
 
         $rootScope.logout = loggedInUser.logout;
-        $rootScope.$on('$stateChangeSuccess', function () {
+        $rootScope.isAdmin = () => localStorage.isAdmin;
+        $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
             if (!localStorage.getItem('loggedInUserId')) {
+              if (toState.name !== "sign-up") {
                 $state.go('login');
+              }
             }
         });
     })
 
 
-    .controller('LoginController', function($scope, UserService, loggedInUser, $state) {
+    .controller('LoginController', function($rootScope, $scope, UserService, loggedInUser, $state) {
       $scope.user = {};
       $scope.errorMessage = '';
 
@@ -46,7 +49,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
           UserService.init()
             .then(() => {
               if (UserService.isPasswordCorrect(user.email, user.password)) {
-                loggedInUser.login(UserService.getUserByEmail(user.email).id);
+                const userObject = UserService.getUserByEmail(user.email);
+                loggedInUser.login(userObject.id);
+
+                if (userObject.admin === true) {
+                  localStorage.isAdmin = true;
+                }
                 $state.go('tab.my-events');
               } else {
                 $scope.errorMessage = 'Wrong combination of email and password.';
