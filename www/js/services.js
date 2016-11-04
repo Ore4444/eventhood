@@ -31,7 +31,7 @@ angular.module('starter.services', [])
     };
   })
 
-  .factory('loggedInUser', ($state) => {
+  .factory('loggedInUser', ($state, $rootScope) => {
     function login(userId) {
       localStorage.setItem('loggedInUserId', userId);
     }
