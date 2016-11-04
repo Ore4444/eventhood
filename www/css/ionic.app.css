@@ -9865,12 +9865,20 @@ body .events {
         display: inline-block;
         text-align: center; }
 
-ion-view[state="login"] .button.button-positive {
+ion-view[state="login"] .button.button-positive,
+ion-view[state="sign-up"] .button.button-positive {
   width: 95%;
   margin-left: auto;
   margin-right: auto; }
 
-ion-view[state="login"] .error {
+ion-view[state="login"] .button.button-light,
+ion-view[state="sign-up"] .button.button-light {
+  display: flex;
+  justify-content: space-around;
+  text-decoration: underline; }
+
+ion-view[state="login"] .error,
+ion-view[state="sign-up"] .error {
   padding: 0 10px; }
 
 .admin-settings {

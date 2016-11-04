@@ -87,6 +87,19 @@ angular.module('starter.services', [])
       })
     }
 
+    function getUserByEmail(email){
+      return _.find(users, user => user.email === email)
+    }
+
+    function isPasswordCorrect(email, password){
+      const user = _.find(users, user => user.email === email);
+      if (user && (user.password === password)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     function init(){
       if (!initialized) {
         return deferred.promise;
@@ -121,7 +134,9 @@ angular.module('starter.services', [])
       registerUserToEvent: registerUserToEvent,
       deleteUserFromEvent: deleteUserFromEvent,
       getAllUsers: getAllUsers,
-      init: init
+      init: init,
+      getUserByEmail,
+      isPasswordCorrect,
     };
   }])
 

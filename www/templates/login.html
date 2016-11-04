@@ -1,15 +1,17 @@
-<ion-view view-title="Welcome">
+<ion-view view-title="Login">
   <ion-content>
     <form name="form" class="list">
       <label class="item item-input item-stacked-label">
         <span class="input-label">Email</span>
         <input name="email" type="email" placeholder="example@ironsrc.com" required ng-model="user.email" />
       </label>
+
       <label class="item item-input item-stacked-label">
         <span class="input-label">Password</span>
         <input name="password" type="password" placeholder="*********" required ng-model="user.password" />
       </label>
-      <input class="button button-block button-positive" type="submit" value="Login" ng-click="saveUser(user)" />
+
+      <input class="button button-block button-positive" type="submit" value="Login" ng-click="loginUser(user)" />
 
       <div class="error" ng-show="form.$submitted || form.email.$touched">
         <span ng-show="form.email.$error.required">Email required.</span>
@@ -19,7 +21,11 @@
       <div class="error" ng-show="form.$submitted || form.password.$touched">
         <span ng-show="form.password.$error.required">Password required.</span>
       </div>
+
+      <div class="error" ng-show="errorMessage">
+        <span>{{errorMessage}}</span>
+      </div>
     </form>
-    <a href="#/sign-up" class="button button-block button-positive button-calm">Don't have account yet?</a>
+    <a href="#/sign-up" class="button button-small button-light">Don't have account yet?</a>
   </ion-content>
 </ion-view>

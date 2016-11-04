@@ -25,42 +25,62 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $rootScope.logout = loggedInUser.logout;
     })
 
+
     .controller('LoginController', function($scope, UserService, loggedInUser, $state) {
       $scope.user = {};
+      $scope.errorMessage = '';
 
-      function maybeRedirect() {
+      function alreadyLoggedIn() {
         if (localStorage.getItem('loggedInUserId')) {
           $state.go('tab.my-events');
         }
       }
 
-      $scope.saveUser = function(user) {
+      $scope.loginUser = function(user) {
         if (user.email && user.password) {
           UserService.init()
             .then(() => {
-              const userId = UserService.addUser(user);
-              loggedInUser.login(userId);
-              maybeRedirect();
+              if (UserService.isPasswordCorrect(user.email, user.password)) {
+                loggedInUser.login(UserService.getUserByEmail(user.email).id);
+                $state.go('tab.my-events');
+              } else {
+                $scope.errorMessage = 'Wrong combination of email and password.';
+              }
             });
         }
       };
 
-      $scope.$on('$stateChangeSuccess', maybeRedirect);
+      $scope.$on('$stateChangeSuccess', alreadyLoggedIn);
     })
-    .controller('SignUpController', function($scope, UserService, loggedInUser) {
-      let userId = null;
+
+
+    .controller('SignUpController', function($scope, UserService, loggedInUser, $state) {
       $scope.user = {};
+      $scope.errorMessage = '';
 
-      UserService.init()
-        .then(() => {
-          $scope.users = UserService.getAllUsers();
-        });
+      function alreadyLoggedIn() {
+        if (localStorage.getItem('loggedInUserId')) {
+          $state.go('tab.my-events');
+        }
+      }
 
-      $scope.saveUser = function() {
-        debugger;
-        userId = UserService.addUser($scope.user);
-        loggedInUser.login(userId);
+      $scope.signUpUser = function(user) {
+        if (user.email && user.password) {
+          UserService.init()
+            .then(() => {
+              const userExists = UserService.getUserByEmail(user.email);
+              if (userExists) {
+                $scope.errorMessage = 'This email already exists.';
+                return false;
+              }
+              const userId = UserService.addUser(user);
+              loggedInUser.login(userId);
+              $state.go('tab.my-events');
+            });
+        }
       };
+
+      $scope.$on('$stateChangeSuccess', alreadyLoggedIn);
     })
 
     .controller('ManageUsersController', function ($scope, UserService) {
