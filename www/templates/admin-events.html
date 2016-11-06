@@ -4,10 +4,10 @@
             <a href="#/tab/edit-event" class="add"><i class="ion-ios-plus"></i></a>
             <ion-list>
                 <ion-item ng-repeat="(key, value) in events" >
-                    <a>
-                        <div class="event-wrap" href="#/tab/edit-event?id={{value.id}}">
+                    <a href="#/tab/edit-event?id={{value.id}}">
+                        <div class="event-wrap">
                             <div class="event-info">
-                                <div>{{value.title}}, {{value.date}}</div>
+                                <div>{{value.title}}, {{value.date | date : dd/MM}}</div>
                                 <div>{{value.location}}</div>
                             </div>
                             <i class="ion-trash-b" ng-click="delete(value.id)"></i>

@@ -38,6 +38,7 @@ angular.module('starter.services', [])
 
     function logout() {
       localStorage.removeItem('loggedInUserId');
+      localStorage.removeItem('isAdmin');
       $state.go('login');
     }
 
@@ -66,6 +67,7 @@ angular.module('starter.services', [])
 
     function updateUserById(userId, data) {
       db.ref('users/' + userId).update(data);
+      users[userId] = data;
     }
 
     function deleteUserById(userId) {

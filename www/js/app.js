@@ -142,7 +142,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         function init() {
             EventService.init().then(()=> {
                 $scope.events = EventService.getAllEvents();
-                console.log($scope.events);
+                // console.log($scope.events);
             });
         }
 
@@ -171,7 +171,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     }
                 });
             }
-            console.log($scope.event)
+            // console.log($scope.event)
         });
         $scope.save = function (event) {
             var savedEvent = _.clone($scope.event);
@@ -194,11 +194,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         function init() {
             userId = parseInt(localStorage.getItem('loggedInUserId'));
             UserService.init()
-                .then(function () {
+                .then(EventService.init)
+                .then(() => {
                     $scope.user = UserService.getUserById(userId);
-                    console.log($scope.user)
+                    // console.log($scope.user)
                 })
-                .then(EventService.init).then(() => {
+                .then(() => {
                 $scope.view = "myEvents";
                 getEvents();
             });
@@ -211,7 +212,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 events.push(EventService.getEventById(event));
             });
             return events;
-
         }
 
         function getAllEvents() {
@@ -228,9 +228,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
             //process events data
             $scope.events = _.compact(_.map(events, function (event) {
-                var eventStartTime = new Date(event.date);
+                if (event.date) var eventStartTime = new Date(event.date);
+
                 //filter out old events
-                if (eventStartTime < Date.now()) {
+                if (eventStartTime && eventStartTime < Date.now()) {
                     return null;
                 }
 
@@ -239,7 +240,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 if ((event.persons).indexOf(userId) > -1) {
                     //check if user can cancel the event
                     var hoursTillTheEvent = (eventStartTime - Date.now()) / (1000 * 60 * 60);
-                    if (hoursTillTheEvent > event.hours_before_cant_regret) {
+                    if ((hoursTillTheEvent > event.hours_before_cant_regret) || !event.hours_before_cant_regret) {
                         event.button = "cancel";
                     } else {
                         event.button = "cancel-disabled";
@@ -257,9 +258,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     }
                 }
 
-                console.log(event)
+                // console.log(event);
                 return event;
             }));
+
+            $scope.$on('$stateChangeSuccess', init);
         }
 
         $scope.register = function (eventId) {
@@ -270,6 +273,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             }
             event.persons.push(userId);
             event.persons = _.uniq(event.persons);
+            delete event.button;
             EventService.updateEventById(eventId, event);
 
             //update user object
@@ -319,12 +323,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     $scope.user = UserService.getUserById(userId);
                     $scope.user.events = _.compact(_.map($scope.user.events, function (eventID) {
                         var event = EventService.getEventById(eventID);
-                        //return only events that happened in the past
-                        return Date.now() - new Date(event.date) > 0 ? event : null;
+                        if (event) {
+                          //return only events that happened in the past
+                          return Date.now() - new Date(event.date) > 0 ? event : null;
+                        } else {
+                          return null;
+                        }
+
                     }));
-                    console.log($scope.user);
+                    // console.log($scope.user);
                 });
         }
+
+      $scope.$on('$stateChangeSuccess', init);
 
         init();
     })

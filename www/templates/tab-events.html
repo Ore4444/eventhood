@@ -1,9 +1,9 @@
 <ion-view view-title="IS Pilates">
     <ion-content>
         <div class="events">
-            <h2 ng-if="user.events_left">Entrances left <br>{{user.events_left}}</h2>
+            <h2 ng-if="user.events_left">Entrances left {{user.events_left}}</h2>
             <h2  ng-if="!user.events_left">No Entrances <br></h2>
-            <h4>Valid until 28/11 2016</h4>
+            <h4 ng-if="user.events_left && user.date_end">Valid until {{user.date_end | date : dd/MM}}</h4>
 
             <div class="options">
         <span ng-click="switchView('myEvents')" ng-class="{bold: view === 'myEvents'}">
@@ -19,7 +19,7 @@
                 <li class="item" ng-repeat="event in events track by $index" class="item">
                     <div class="info">
                         <div>{{ event.title}}</div>
-                        <div>{{ event.date}}</div>
+                        <div>{{ event.date | date : dd/MM}}</div>
                         <div>{{ event.location}}</div>
                     </div>
                     <button ng-if="event.button=='cancel-disabled'" class="button button-small cancel-disabled" disabled="disabled">Cancel

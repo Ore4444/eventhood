@@ -4,7 +4,7 @@ angular.module('starter.controllers', [])
 
   var firebase = firebaseInit.getInstance();
 
-  console.log($firebaseAuth);
+  //console.log($firebaseAuth);
 
   $firebaseAuth.createUserWithEmailAndPassword('example@gmail.com', 'pass').catch(function (error) {
     // Handle Errors here.

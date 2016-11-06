@@ -9,25 +9,25 @@
       <ion-item class="item-divider">
         Personal Information
       </ion-item>
-      <ion-item>
+      <ion-item ng-if="user.email">
         {{user.email}}
       </ion-item>
-      <ion-item>
+      <ion-item ng-if="user.name">
        {{user.name}}
       </ion-item>
-      <ion-item>
+      <ion-item ng-if="user.phone">
         {{user.phone}}
       </ion-item>
       <ion-item class="item-divider">
         Account Information
       </ion-item>
       <ion-item>
-        Total: {{user.events_left}}, valid until 28/11/2016
+        Total: {{user.events_left}}, valid until {{user.date_end | date : dd/MM}}
       </ion-item>
-      <ion-item class="item-divider">
+      <ion-item ng-if="false" class="item-divider">
         Account History
       </ion-item>
-      <ion-item ng-repeat="event in user.events">
+      <ion-item ng-if="false" ng-repeat="event in user.events">
         {{event.title}},  {{event.date}}
       </ion-item>
     </ion-list>
