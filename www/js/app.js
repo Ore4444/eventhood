@@ -33,39 +33,47 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         });
     })
 
-
-    .controller('LoginController', function($rootScope, $scope, UserService, loggedInUser, $state) {
+    .controller('LoginController', function($rootScope, $scope, UserService, loggedInUser, $state, firebase) {
       $scope.user = {};
       $scope.errorMessage = '';
 
-      function alreadyLoggedIn() {
-        if (localStorage.getItem('loggedInUserId')) {
-          $state.go('tab.my-events');
-        }
+      var auth = firebase.auth();
+          auth.onAuthStateChanged((authData) => {
+          if (authData) {
+            console.log(authData);
+            var user = UserService.getUserByEmail(authData.email);
+            if (user) {
+              loggedInUser.login(user.id);
+              $state.go('tab.my-events');
+            } else {
+              var userId = UserService.addUser({
+                email: authData.email,
+                name: authData.displayName || authData.email
+              });
+
+              loggedInUser.login(userId);
+              $state.go('tab.my-events');
+            }
+          } else {
+            $state.go('login');
+          }
+      });
+      
+      $scope.logout = function(){
+        auth.signOut();
+        loggedInUser.logout();
       }
 
-      $scope.loginUser = function(user) {
-        if (user.email && user.password) {
-          UserService.init()
-            .then(() => {
-              if (UserService.isPasswordCorrect(user.email, user.password)) {
-                const userObject = UserService.getUserByEmail(user.email);
-                loggedInUser.login(userObject.id);
+      $scope.loginUser = function() {
+          var provider = new firebase.auth.GoogleAuthProvider();
+              provider.addScope('https://www.googleapis.com/auth/plus.login');
 
-                if (userObject.admin === true) {
-                  localStorage.isAdmin = true;
-                }
-                $state.go('tab.my-events');
-              } else {
-                $scope.errorMessage = 'Wrong combination of email and password.';
-              }
-            });
-        }
-      };
-
-      $scope.$on('$stateChangeSuccess', alreadyLoggedIn);
+              auth.signInWithPopup(provider)
+                 .catch(error=> {
+                    console.log('failed login!!');
+                  });
+           }
     })
-
 
     .controller('SignUpController', function($scope, UserService, loggedInUser, $state) {
       $scope.user = {};

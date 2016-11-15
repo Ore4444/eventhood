@@ -27,7 +27,8 @@ angular.module('starter.services', [])
     }
 
     return {
-      dataBase: getInstance().database()
+      dataBase: getInstance().database(),
+      fireBase: getInstance()
     };
   })
 
