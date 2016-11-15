@@ -161,7 +161,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             if (!eventId) {
                 $scope.event = {};
             } else {
-                $scope.event = EventService.getEventById(eventId);
+              const event = EventService.getEventById(eventId);
+              if (event) {
+                $scope.event = event;
                 $scope.event.date = new Date($scope.event.date);
                 $scope.users = [];
                 _.each($scope.event.persons || [], function (person) {
@@ -170,6 +172,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                         $scope.users.push(user);
                     }
                 });
+              };
             }
             // console.log($scope.event)
         });
@@ -177,6 +180,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             var savedEvent = _.clone($scope.event);
             //convert date back to string
             savedEvent.date = moment($scope.event.date).format('LLLL');
+            if (!savedEvent.hours_before_cant_regret) {
+              savedEvent.hours_before_cant_regret = 0;
+            }
             if (eventId) {
                 //edit event
                 EventService.updateEventById(eventId, savedEvent);
@@ -196,13 +202,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             UserService.init()
                 .then(EventService.init)
                 .then(() => {
-                    $scope.user = UserService.getUserById(userId);
-                    // console.log($scope.user)
+                    $scope.user = UserService.getUserById(userId); ////
                 })
                 .then(() => {
-                $scope.view = "myEvents";
-                getEvents();
-            });
+                  $scope.view = "myEvents";
+                  getEvents();
+                });
         }
 
         function getUsersEvents() {
@@ -227,6 +232,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             }
 
             //process events data
+          if(events) {
             $scope.events = _.compact(_.map(events, function (event) {
                 if (event.date) var eventStartTime = new Date(event.date);
 
@@ -236,7 +242,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 }
 
                 //check if the user is registered to event
-                event.persons = event.persons || []
+                event.persons = event.persons || [];
                 if ((event.persons).indexOf(userId) > -1) {
                     //check if user can cancel the event
                     var hoursTillTheEvent = (eventStartTime - Date.now()) / (1000 * 60 * 60);
@@ -261,7 +267,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 // console.log(event);
                 return event;
             }));
-
+          }
             $scope.$on('$stateChangeSuccess', init);
         }
 
@@ -306,7 +312,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $scope.switchView = function (view) {
             $scope.view = view;
             getEvents();
-        }
+        };
+
         $scope.$on('$stateChangeSuccess', init);
 
         init();
@@ -321,7 +328,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 .then(EventService.init)
                 .then(function () {
                     $scope.user = UserService.getUserById(userId);
-                    $scope.user.events = _.compact(_.map($scope.user.events, function (eventID) {
+                    if ($scope.user && $scope.user.events) {
+                      $scope.user.events = _.compact(_.map($scope.user.events, function (eventID) {
                         var event = EventService.getEventById(eventID);
                         if (event) {
                           //return only events that happened in the past
@@ -330,8 +338,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                           return null;
                         }
 
-                    }));
-                    // console.log($scope.user);
+                      }));
+                    }
                 });
         }
 
