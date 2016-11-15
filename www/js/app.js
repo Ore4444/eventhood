@@ -58,7 +58,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             $state.go('login');
           }
       });
-      
+
       $scope.logout = function(){
         auth.signOut();
         loggedInUser.logout();
@@ -337,7 +337,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 .then(function () {
                     $scope.user = UserService.getUserById(userId);
                     if ($scope.user && $scope.user.events) {
-                      $scope.user.events = _.compact(_.map($scope.user.events, function (eventID) {
+                      $scope.user.events_history = _.compact(_.map($scope.user.events, function (eventID) {
                         var event = EventService.getEventById(eventID);
                         if (event) {
                           //return only events that happened in the past
